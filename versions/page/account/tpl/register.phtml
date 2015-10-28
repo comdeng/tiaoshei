@@ -1,0 +1,111 @@
+<?php echo $this->Partial('index/tpl/header.phtml')?>
+
+<h2 class="title" style="margin-top:20px;">使用合作伙伴帐号登录</h2>
+<ul>
+	<li class="weibo_icon"><a href="/account/open/sina">微博登录</a></li>
+	<li class="taobao_icon"><a href="/account/open/taobao">淘宝登录</a></li>
+	<li class="tencent_icon"><a href="/account/open/tencent">QQ登录</a></li>
+	<li>或者，直接<a id="btnRegister">注册</a>。</li>
+</ul>
+
+<form method="post" action="/account/_register" id="formRegister" style="display:none">
+	<table class="form">
+		<tr>
+			<th>Email:</th>
+			<td><input type="text" name="email" value="" verify-rule="{
+				required:'邮箱不能为空',
+				email:'email格式不正确',
+				remote:{
+					url:'/account/_check_email',
+					data:function(val){return 'email='+val},
+					verify:function(ret){
+						return !ret.data.exists;
+					},
+					msg:'这个邮箱已被注册'
+				}
+			}"/></td>
+		</tr>
+		<tr>
+			<th>密码:</th>
+			<td><input type="password" id="txtPassword" name="password" value="" verify-rule="{
+				required:'请输入密码',
+				range:{
+					event:['blur'],
+					type:'length',
+					min:6,
+					max:20,
+					msg:'密码长度为6-20位',
+					trigger:'rePassword.compare'
+				}
+			}"/></td>
+		</tr>
+		<tr>
+			<th>重复密码:</th>
+			<td><input type="password" name="rePassword" value="" verify-rule="{
+				compare:{
+					event:'blur',
+					to:'txtPassword',
+					condition:'equal',
+					msg:'两次输入密码必须一样',
+					name:'rePassword.compare'
+				}
+			}"/></td>
+		</tr>
+		<tr>
+			<th>昵称：</th>
+			<td>
+			<input maxlength="20" type="text" name="nickname" verify-rule="{
+				required:'昵称不能为空',
+				range:{
+					msg:'昵称长度为1至20位字符',
+					type:'length',
+					min:1,
+					max:20
+				},
+				remote:{
+					url:'/account/_check_nickname',
+					data:function(val){return 'nickname='+val},
+					verify:function(ret){
+						switch(ret.data.exists) {
+							case 'illegal':
+								this.msg = '昵称只允许汉字、英文字符、数字和下划线';
+								return false;
+							case false:
+								return true;
+							case true:
+								this.msg = '该昵称已经被使用';
+								return false;
+						}
+					},
+					msg:'这个用户名已被注册'
+				}
+				}" value="" /><span id="uname"></span>
+			</td>
+		</tr>
+		<tr>
+			<th></th>
+			<td><input type="submit" value="注册"/></td>
+		</tr>
+		<tr>
+			<th></th>
+			<td>已经有帐号？直接<a href="/account/login">登录</a></td>
+		</tr>
+	</table>
+</form>
+<script>
+hapj.ui('#btnRegister').on('click', function(){
+	hapj.ui('#formRegister').show();
+	return false;
+});
+hapj.get('errMap').add({
+	'user.u_emailOrPwdWrong':'email或者密码错误',
+	'user.u_notactived':'该用户尚未激活',
+	'user.u_forbidden':'该用户已经被冻结'
+});
+hapj.com('verify').active('formRegister', {
+	ok: function() {
+		location.href = '/my/';
+	}
+});
+</script>
+<?php echo $this->Partial('index/tpl/footer.phtml')?>

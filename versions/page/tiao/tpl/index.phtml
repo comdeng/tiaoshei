@@ -1,0 +1,59 @@
+<?php echo $this->Partial('index/tpl/header.phtml')?>
+
+<?php 
+	$tiaoUser = $this->v['users'][$this->v['tiao']['user_id']];
+?>
+<style>.tiao_list .desc{width:880px;}</style>
+<div class="tiao_list">
+	<h2 class="title"><?php echo $this->v['tiao']['tiao_name']?></h2>
+	<dl class="g">
+		<dt class="avatar">
+			<a href="/user/<?php echo $tiaoUser['user_id']?>"><img src="<?php echo $this->Picture($tiaoUser['avatar_id'], 'size50')?>"/></a>
+		</dt>
+		<dd class="desc">
+			<a href="/user/<?php echo $tiaoUser['user_id']?>"><?php echo $tiaoUser['nickname']?></a>
+			发表于
+			<em class="date"><?php echo $this->Date($this->v['tiao']['create_time'])?></em>
+			截止日期
+			<em class="date"><?php echo $this->Date($this->v['tiao']['expire_time'])?></em>
+			<p class="remark"><?php echo $this->v['tiao']['tiao_desc']?></p>
+		</dd>
+	</dl>
+	<ul class="g _jtiaos">
+	<?php foreach($this->v['products'] as $product):
+		$site = !empty($this->v['sites'][$product['site_id']]) ? $this->v['sites'][$product['site_id']] : false;
+	?>
+		<li class="tiao">
+			<div class="product_img g-f">
+				<div class="product_img"><img src="<?php echo $this->Picture($product['product_img_id'], 'size270')?>" data-href="<?php echo $this->Picture($product['product_img_id'], 'size270')?>"/></div>
+				<ul class="g-f-u">
+					<li class="yes"><a href="/tiao/product/<?php echo $product['product_id']?>?type=yes">挑(<?php echo $product['yes_num']?>)</a></li>
+					<li class="no"><a href="/tiao/product/<?php echo $product['product_id']?>/?type=no">不挑(<?php echo $product['no_num']?>)</a></li>
+				</ul>
+			</div>
+			<div class="product_meta">
+				<em class="price">￥<b><?php echo $product['product_price']?></b></em>
+				来自<a href="/tiao/product/<?php echo $product['product_id']?>/outlink" target="_blank"><?php echo $product['site_name']?></a>
+				<h4 title="<?php echo $product['product_name']?>"><?php echo $product['product_name']?></h4>
+			</div>
+		</li>
+	<?php endforeach;?>
+	</ul>
+</div>
+<script>
+if (!hapj.browser.mobile) {
+	hapj({
+		'tiaos': function(E) {
+			E.on('a', 'click', function(e){
+				var t = e.target;
+				if (t.parentNode.nodeName == 'LI' && /^(yes|no)$/.test(t.parentNode.className)) {
+					hapj.get('modalDlg').show(t.href).title(hapj.ui('.tiao_list').tag('h2').html());
+					return false;
+				}
+			});
+		}
+	});
+}
+</script>
+
+<?php echo $this->Partial('index/tpl/footer.phtml')?>

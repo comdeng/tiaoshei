@@ -1,0 +1,51 @@
+<?php echo $this->Partial('index/tpl/header.phtml', array(
+	'cssList' =>'/my/my.css'		
+))?>
+<?php 
+	echo $this->Partial('my/tpl/nav.phtml', array('cpage'=>'account'));
+	$cuser = $this->v['cuser'];
+	echo $this->Partial('my/account/tpl/nav.phtml', array('cpage' => 'avatar'));
+?>
+<style>
+.avatar_modify{}
+.avatar_modify dt{width:360px;height:440px;}
+.avatar_modify dd{padding:60px 0 0 60px;}
+</style>
+<h2 class="title">修改头像</h2>
+<dl class="avatar_modify g">
+	<dt>
+		<div id="cropAvatar"></div>
+	</dt>
+	<dd id="myAvatars">
+		您上传的头像会自动生成两种尺寸，请注意头像是否清晰
+		<h4>大图:(100X100)</h4>
+		<img class="avatar_big" src="<?php echo $this->Picture($this->v['cuser']['avatar_id'], 'size100')?>"/>
+		<h4>小图:(50X50)</h4>
+		<img class="avatar_small" src="<?php echo $this->Picture($this->v['cuser']['avatar_id'], 'size50')?>"/>
+		<form method="post" action="/my/account/_avatar" style="display:none">
+			<input type="hidden" name="avatar_id" value=""/>
+			<input type="submit" value="保存">
+		</form>
+	</dd>
+</dl>
+
+<script src="<?php echo $this->StaticUrl('/util/image/image.js')?>"></script>
+<script>
+	var eAvatars = hapj.ui('#myAvatars');
+	hapj.com('upload').active('cropAvatar', ['size100','size50'], 'crop').setCallback(function(data){
+		eAvatars.tag('img').each(function(){
+			if (this.className == 'avatar_big') {
+				this.src = data['urls']['size100'];
+			} else if (this.className == 'avatar_small') {
+				this.src = data['urls']['size50'];
+			}
+			eAvatars.tag('form').show()[0].avatar_id.value = data.id;
+		});
+	});
+	hapj.com('verify').active(eAvatars.tag('form'), {
+		ok:function(){
+			hapj.ui.dialog.ok('修改成功', function(){location.reload();})
+		}
+	});
+</script>
+<?php echo $this->Partial('index/tpl/footer.phtml')?>

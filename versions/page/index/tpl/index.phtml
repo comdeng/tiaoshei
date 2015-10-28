@@ -1,0 +1,93 @@
+<?php echo $this->Partial('index/tpl/header.phtml')?>
+<?php if ($this->v['tiaos']):?>
+<ul class="tiao_list g _jtiaos">
+<?php 
+foreach($this->v['tiaos'] as $tiao):
+	$user = $this->v['users'][$tiao['user_id']];
+?>
+	<li class="tiao">
+		<h2 class="title"><a href="/tiao/<?php echo $tiao['tiao_id']?>"><?php echo $tiao['tiao_name']?></a></h2>
+		<dl class="g hd">
+			<dt class="avatar">
+				<a href="/user/<?php echo $user['user_id']?>"><img src="<?php echo $this->Picture($user['avatar_id'], 'size50')?>"/></a>
+			</dt>
+			<dd>
+				<a href="/user/<?php echo $user['user_id']?>"><?php echo $user['nickname']?></a><em class="date"><?php echo $this->Date($tiao['create_time'])?></em>
+				<p class="remark"><?php echo $tiao['tiao_desc']?></p>
+			</dd>
+		</dl>
+		
+		<div class="product_img g-f"><img/><ul class="g-f-u"></ul></div>
+		<?php $products = $this->v['tiaoProducts'][$tiao['tiao_id']]?>
+		<ul class="_jproducts product_thumb g">
+		<?php foreach($products as $product):?>
+			<li>
+				<div><img src="<?php echo $this->Picture($product['product_img_id'], 'size60')?>" data-href="<?php echo $this->Picture($product['product_img_id'], 'size270')?>"/></div>
+				<ul>
+					<li class="yes"><a href="/tiao/product/<?php echo $product['product_id']?>?type=yes">挑(<?php echo $product['yes_num']?>)</a></li>
+					<li class="no"><a href="/tiao/product/<?php echo $product['product_id']?>/?type=no">不挑(<?php echo $product['no_num']?>)</a></li>
+				</ul>
+			</li>
+		<?php endforeach;?>
+		</ul>
+		<ul class="product_meta">
+			<?php foreach($products as $product):?>
+			<li>
+				<em class="price">￥<b><?php echo $product['product_price']?></b></em>
+				来自<a href="/tiao/product/<?php echo $product['product_id']?>/outlink" target="_blank"><?php echo $product['site_name']?></a>
+				<h4 title="<?php echo $product['product_name']?>"><?php echo $product['product_name']?></h4>
+			</li>
+			<?php endforeach;?>
+		</ul>
+	</li>
+<?php endforeach;?>
+</ul>
+<script>
+hapj({
+	'products': function(E) {
+		E.each(function(){
+			var pe = hapj.ui(this), target = pe.next('ul'), img = pe.prev().tag('img'),sw = pe.switchable({
+				tag:'img',
+				method:'hover',
+				map:function(i){return target.tag('li')[i];},
+				trigger:function(ts, i) {
+					ts.parent().removeClass('on');
+					hapj.ui(this.parentNode).addClass('on');
+					pe.tag('dd').hide();
+					hapj.ui(this).parent('dt').next('dd').show();
+				},
+				target: function(ts, i, trigger) {
+					ts.hide();
+					hapj.ui(this).show();
+					trigger = hapj.ui(trigger);
+					img.attr('src', trigger.attr('data-href'));
+					img.next('ul').html(trigger.parent().next('ul').html())
+				}
+			}).to(0);
+			if (hapj.browser.mobile) {
+				target.touchable({
+					left:function(){
+						sw.prev();
+					},
+					right:function() {
+						sw.next();
+					}
+				});
+			}
+		});
+		
+	},
+	'tiaos': function(E) {
+		if (hapj.browser.mobile) return;
+		E.on('a', 'click', function(e){
+			var t = e.target;
+			if (t.parentNode.nodeName == 'LI' && /^(yes|no)$/.test(t.parentNode.className)) {
+				hapj.get('modalDlg').show(t.href).title(hapj.ui(t).parent('ul').parent('li').tag('h2').html());
+				return false;
+			}
+		});
+	}
+});
+</script>
+<?php endif;?>
+<?php echo $this->Partial('index/tpl/footer.phtml')?>

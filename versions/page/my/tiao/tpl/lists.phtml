@@ -1,0 +1,45 @@
+<?php echo $this->Partial('index/tpl/header.phtml', array(
+	'cssList' =>'/my/my.css'		
+))?>
+<?php echo $this->Partial('my/tpl/nav.phtml', array('cpage'=>'tiao'));?>
+<?php echo $this->Partial('my/tiao/tpl/nav.phtml', array('cpage'=>'tiaos'));?>
+
+<?php if ($this->v['tiaoList']):?>
+<div class="my_bd list">
+	<table>
+		<thead>
+			<tr>
+				<th width="40">ID</th>
+				<th>名称</th>
+				<th width="60">创建日期</th>
+				<th width="60">截至日期</th>
+				<th width="200">操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach($this->v['tiaoList'] as $tiao):?>
+			<tr>
+				<td><?php echo $tiao['tiao_id']?></td>
+				<td><a href="/my/tiao/<?php echo $tiao['tiao_id']?>/products"><?php echo $tiao['tiao_name']?></a></td>
+				<td><?php echo $this->Date($tiao['create_time'])?></td>
+				<td><?php echo $this->Date($tiao['expire_time'])?></td>
+				<td>
+					<a href="/tiao/<?php echo $tiao['tiao_id']?>" target="_blank">查看</a>
+					<a href="/my/tiao/<?php echo $tiao['tiao_id']?>/update">编辑</a>
+					<a href="/my/tiao/_delete?tiao_id=<?php echo $tiao['tiao_id']?>" confirm="你确定要删除吗？">删除</a>
+					<a href="/my/tiao/<?php echo $tiao['tiao_id']?>/products">加东东</a>
+				</td>
+			</tr>
+			<?php endforeach;?>
+		</tbody>
+	</table>
+	<?php echo $this->Partial('index/tpl/pager.phtml')?>
+</div>
+<script type="text/javascript">hapj.ui('table').ajaxable({ok:function(){location.reload();}});</script>
+<?php else:?>
+<p class="remark" style="padding:20px 0;">
+	你还没有创建过任何挑哦，赶紧来加一个，<a href="/my/tiao/add">点击添加挑</a>。
+</p>
+<?php endif;?>
+
+<?php echo $this->Partial('index/tpl/footer.phtml')?>

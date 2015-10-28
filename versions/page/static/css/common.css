@@ -1,0 +1,70 @@
+@CHARSET "UTF-8";
+em.date{font-size:11px;color:gray;}
+p.remark{color:#555;line-height:18px;margin:0;}
+dt.avatar{width:54px;}
+em.price{color:#999;}
+em.price b{color:#F00;font-size:30px;font-style:italic;}
+h2.title{font-size:18px;font-family:"Microsoft Yahei","黑体";font-weight:normal;margin:5px 0 8px;line-height:18px;}
+em.yes_choose{color:green;}
+em.no_choose{color:red;}
+
+/****************************************list*********************************/
+.list{}
+.list table,.list ul,.list ol{border-collapse:collapse; width:100%; border:1px #cfd0d1 solid; }
+.list ul,.list ol{border:0;}
+.list table td,.list li{vertical-align:middle; line-height:20px;}
+.list table thead th{text-align:left;padding:0 4px;background-color:#93a8c0; height:35px; color:#fff;font-weight:bold;}
+.list table tbody td{padding:0 4px;height:35px; border-bottom:1px #cfd0d1 dotted;}
+.list li{line-height:30px;}
+.list table tbody td.edit a{margin:0 3px;}
+.list table tbody tr:nth-child(2n),.list li:nth-child(2n){background-color:#f8f8f9;}
+.list table tbody tr:hover,.list li:hover{background-color:#dadee3;}
+.list table tbody a,.list li a{margin:0 5px; }
+.list table tbody a:hover,.list li a:hover{text-decoration:underline;}
+
+table.form tr{line-height:24px;}
+table.form th{padding-right:4px;text-align:right;padding:2px;}
+table.form td{padding:2px;}
+table.form td input[type=text],table.form td input[type=password]{height:20px;line-height:20px;}
+table.form td input[type=submit]{font-size:14px;height:28px;padding:0 10px;}
+table.form td textarea{line-height:20px;}
+
+/**************************************verify******************************/
+span.err,span.ok,span.success,span.hint{margin-left:5px; padding-left:20px;height:20px;line-height:20px;background:url(../img/sprite.gif) 0 2px no-repeat;display:inline-block;zoom: 1; *display:inline;}
+span.err{color:red;background-position:0 -77px;}
+span.success,span.ok{color:green;background-position:0 -38px;}
+span.success{text-indent:-9999px;}
+span.hint{color:#999;background:none;padding:0;}
+
+/****************************dialog*************************************/
+/*
+ * dialog弹出框
+ */
+.dialog{border:1px solid #BBBBBB;background-color:#fff;box-shadow: 1px 1px 8px #666666;}
+	.dialog .dhd{font-size:14px; height:30px; line-height:30px; position:relative;background-color: #DDD; border-bottom: 1px solid #F0F0F0;
+			background:-moz-linear-gradient(top, #DDD, #F0F0F0);
+		    background:-webkit-gradient(linear, 0 0, 0 bottom,from(#DDD), to(#F0F0F0));}
+	.dialog .dhd h3,.dialog .dhd span{color:#333;font-weight:bold;padding-left:10px;}
+	.dialog .dhd h3 a{color:#333;}
+	.dialog .dhd a.dclose{color:#FFF;position:absolute;right:5px;top:0; display:block; zoom:1; width:16px; height:27px; line-height:27px; background:url(../img/close.gif) no-repeat;}
+	.dialog .dhd a.dclose:hover{text-decoration:none;color:#F00;}
+	.dialog .dbd{padding:4px 0;}
+	.dialog .dft{bottom: 0;height: 30px;left: 0;line-height: 30px;position: absolute;text-align: center;width: 300px;}
+.dialog table th{text-align:right;padding:8px 0; vertical-align:top;font-weight:bold; color:#666;}
+	.dialog table td{padding-left:10px; color:#999;padding:8px 0;}
+	.dialog .dok, .dialog .derr{font-size: 14px; margin: 20px 0 0 20px;}
+#modalDlg{top:30px;overflow:auto;overflow-x:hidden;width:560px;height:100%;position:fixed;z-index:10000}
+#modalDlg .dbd{padding:20px;}
+.dialog .out_dhd{position:fixed;top:0;width:560px;z-index:9000;}
+.dialog_shadow {position:fixed;background:#000;opacity:0.6;filter:Alpha(Opacity=60);z-index:9999;left:0;top:0;width:100%;height:100%;right:0;bottom:0;}
+	
+/****************************pager***************************************/
+.pager{height:25px; margin:15px 0 5px 0;position:relative;}
+.pager ul{position:absolute;right:0;top:0;height:23px;letter-spacing: -0.31em;*letter-spacing: normal;word-spacing: -0.43em;}
+.pager li{height:23px;line-height:23px;margin-right:5px;display: inline-block;zoom: 1; *display: inline;letter-spacing: normal;word-spacing: normal;vertical-align: top;}
+.pager li a{padding:0 7px;display:block;*display:inline; border:1px #ddd solid;}
+.pager li.p a,.pager li.f a,.pager li.n a,.pager li.l a{border:0;}
+.pager li.f input{margin:0 3px;}
+
+/*************************calendar************************************/
+.cal{width:301px;background:#FFF;border:solid 1px #BBB;z-index:10001}.cal li{height:20px;line-height:20px}.cal li a{display:block}.cal .hd .g-1-8{text-align:center}.cal .hd dl{position:absolute;z-index:9999;overflow:hidden;width:75px;background:#FFF;height:20px}.cal .hd .ct{position:relative}.cal .hd .slt{left:0;top:0;position:absolute}.cal .hd .slt a{padding-left:20px}.cal .hd .srt{right:0;top:0;position:absolute}.cal .hd .srt a{padding-left:28px}.cal .hd dl dd{height:20px;line-height:20px;border:solid 1px #FFF;border-top:0}.cal .hd dl.on{height:100px;overflow:scroll;overflow-x:hidden}.cal .hd dl.on dd{background:#EEE}.cal .hd dl.on dd:hover{background:#333;color:#FFF}.cal .bd li{text-align:center}.cal .bd .cp a{color:#333}.cal .bd .cn a{color:#333}.cal .bd .cw{background:#EEE;color:#999}.cal .bd .cd .cday{background:#FF0;color:#000}.cal .bd li a:hover{background:#333;color:#FFF}.cal .bd .co a{color:#999}.cal .bd .co a:hover{background:0;color:#999;text-decoration:none;cursor:default}

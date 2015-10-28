@@ -1,0 +1,136 @@
+<?php echo $this->Partial('index/tpl/header.phtml')?>
+<style>
+.open_user_info{padding:40px 0;}
+.open_user_info dt img{max-width:50px;max-height:50px;}
+</style>
+<dl class="g open_user_info">
+	<dt class="avatar"><img src="<?php echo $this->v['info']['avatar']?>"/></dt>
+	<dd><?php echo $this->v['info']['bind_info']['nickname']?>，您已经登录。</dd>
+</dl>
+
+<ul class="g">
+	<li style="width:400px;">
+	<h2 class="title">请补充好您的信息</h2>
+	<form method="post" action="/account/open/_fill" autocomplete="off" id="formFill">
+		<input type="hidden" name="bind_site_id" value="<?php echo $this->v['bindSiteId']?>"/>
+		<table>
+			<tr>
+				<th>Email:</th>
+				<td><input type="text" name="email" value="" verify-rule="{
+					required:'邮箱不能为空',
+					email:'email格式不正确',
+					remote:{
+						url:'/account/_check_email',
+						data:function(val){return 'email='+val},
+						verify:function(ret){
+							return !ret.data.exists;
+						},
+						msg:'这个邮箱已被注册'
+					}
+				}"/></td>
+			</tr>
+			<tr>
+				<th>密码:</th>
+				<td><input type="password" id="txtPassword" name="password" value="" verify-rule="{
+					required:'请输入密码',
+					range:{
+						event:['blur'],
+						type:'length',
+						min:6,
+						max:20,
+						msg:'密码长度为6-20位',
+						trigger:'rePassword.compare'
+					}
+				}"/></td>
+			</tr>
+			<tr>
+				<th>昵称:</th>
+				<td>
+				<input maxlength="20" type="text" name="nickname" value="<?php echo $this->v['info']['bind_info']['nickname']?>" verify-rule="{
+					required:'昵称不能为空',
+					range:{
+						msg:'昵称长度为1至20位字符',
+						type:'length',
+						min:1,
+						max:20
+					},
+					remote:{
+						url:'/account/_check_nickname',
+						data:function(val){return 'nickname='+val},
+						verify:function(ret){
+							switch(ret.data.exists) {
+								case 'illegal':
+									this.msg = '昵称只允许汉字、英文字符、数字和下划线';
+									return false;
+								case false:
+									return true;
+								case true:
+									this.msg = '该昵称已经被使用';
+									return false;
+							}
+						},
+						msg:'这个用户名已被注册'
+					}
+					}" value="" /><span id="uname"></span>
+				</td>
+			</tr>
+			<tr>
+				<th></th>
+				<td><input type="submit" value="完成"/></td>
+			</tr>
+		</table>
+	</form>
+	<script>
+	hapj.get('errMap').add({
+		'user.u_nicknameUsed': '昵称已经被使用'
+	});
+	hapj.com('verify').active('formFill', {
+		ok: function() {
+			location.href = '/my/';
+		}
+	});
+	</script>
+	</li>
+	<li>
+	<h2 class="title">如果您在本站已经有帐号，可以直接绑定</h2>
+	<form method="post" action="/account/open/_bind" id="formBind" autocomplete="off">
+		<input type="hidden" name="bind_site_id" value="<?php echo $this->v['bindSiteId']?>"/>
+		<table>
+			<tr>
+				<th>Email:</th>
+				<td><input type="text" name="email" value="" verify-rule="{
+					required:'邮箱不能为空',
+					email:'email格式不正确',
+					remote:{
+						url:'/account/open/_check_email',
+						data:function(val){return 'email='+val+'&bind_site_id=' + <?php echo $this->v['bindSiteId']?>},
+						verify:function(ret){
+							return !ret.data.exists;
+						},
+						msg:'不能重复绑定同一个网站的帐号'
+					}
+				}"/></td>
+			</tr>
+			<tr>
+				<th>密码:</th>
+				<td><input type="password" name="password" value="" verify-rule="{required:'密码不能为空'}"/></td>
+			</tr>
+			<tr>
+				<th></th>
+				<td><input type="submit" value="绑定"/></td>
+			</tr>
+		</table>
+	</form>
+	<script>
+	hapj.com('verify').active('formBind',{
+		ok: function() {
+			location.href = '/my/';
+		},
+		error: function(err, code) {
+			hapj.ui.dialog(err + ':' + code);
+		}
+		
+	});</script>
+	</li>
+</ul>
+<?php echo $this->Partial('index/tpl/footer.phtml')?>

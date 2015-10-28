@@ -1,0 +1,137 @@
+<?php echo $this->Partial('index/tpl/header.phtml', array(
+		'cssList' => '/my/my.css'	
+	))?>
+<?php echo $this->Partial('my/tpl/nav.phtml', array('cpage'=>'tiao'));?>
+<?php echo $this->Partial('my/tiao/tpl/nav.phtml');?>
+<?php 
+	$isUpdate = $this->v['isUpdate'];
+	
+	$url = $isUpdate ? $this->v['product']['product_url'] : $this->v['info']['url'];
+	$title = $isUpdate ? $this->v['product']['product_name'] : $this->v['info']['title'];
+	$price = $isUpdate ? $this->v['product']['product_price'] : (isset($this->v['info']['price']) ? $this->v['info']['price'] : '');
+?>
+
+<h2 class="title">添加东东到“<?php echo $this->v['tiao']['tiao_name']?>”</h2>
+
+<form method="post" action="/my/tiao/<?php echo $isUpdate ? '_update' : '_add'?>_product">
+	<?php if ($isUpdate):?>
+	<input type="hidden" name="product_id" value="<?php echo $this->v['product']['product_id']?>"/>
+	<?php else:?>
+	<input type="hidden" name="tiao_id" value="<?php echo $this->v['tiao']['tiao_id']?>"/>
+	<input type="hidden" name="product_url" value="<?php echo $this->v['info']['url']?>"/>
+	<?php endif;?>
+	<table width="100%">
+		<tr>
+			<th width="60">网址</th>
+			<td><a href="<?php echo $url?>" target="_blank"><?php echo $url?></a></td>
+		</tr>
+		<tr>
+			<th>名称</th>
+			<td><input type="text" name="product_name" max_length="100" value="<?php echo $title?>" style="width:600px;" verify-rule="{
+				required:'名称不能为空',
+				range:{
+					type:'length',
+					min:1,
+					max:100,
+					msg:'名称长度为1至100字'
+				}
+			}"/></td>
+		</tr>
+		<tr>
+			<th>价格</th>
+			<td><input type="text" name="product_price" value="<?php echo $price?>" style="width:60px;" verify-rule="{
+				required:'价格不能为空',
+				number:'价格必须为数字'
+			}"/>元</td>
+		</tr>
+		<tr>
+			<th valign="top">图片</th>
+			<td>
+				<?php if ($isUpdate):?>
+				<div>
+					<img src="<?php echo $this->Picture($this->v['product']['product_img_id'], 'size270')?>" width="140" height="140"/>
+					<a href="/my/tiao/_get_url_info?url=<?php echo urlencode($this->v['product']['product_url'])?>" id="lnkModifyAvatar">修改</a>
+				</div>
+				<div style="display:none">
+				<?php endif;?>
+					<label>选择一副最适合该产品的图片吧！</label>
+					<div class="product_imgs">
+						<ul class="g"></ul>
+						<input type="hidden" name="product_img" value=""<?php if(!$isUpdate):?> verify-rule="{required:'必须选择产品的图片'}"<?php endif;?>/>
+					</div>
+				<?php if($isUpdate):?><a id="lnkCancelAvatar">取消</a></div><?php endif;?>
+			</td>
+		</tr>
+		<tr>
+			<th valign="top">理由</th>
+			<td>
+				<ul class="g">
+					<li>
+						<label>为什么要挑它呢？</label><br/>
+						<textarea style="width:300px;height:80px;" name="yes_remark"><?php if ($isUpdate && isset($this->v['chooses']['1'])) echo $this->v['chooses']['1']['choose_remark']?></textarea>
+					</li>
+					<li>
+						<label>不挑是因为什么呢？</label><br/>
+						<textarea style="width:300px;height:80px;" name="no_remark"><?php if ($isUpdate && isset($this->v['chooses']['0'])) echo $this->v['chooses']['0']['choose_remark']?></textarea>
+					</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<th></th>
+			<td>
+				<input type="submit" value="<?php echo $isUpdate ? '修改' : '添加'?>"/>
+				<a href="/my/tiao/<?php echo $this->v['tiao']['tiao_id']?>/products">取消</a>
+			</td>
+		</tr>
+	</table>
+</form>
+<script src="<?php echo $this->StaticUrl('/my/my.js')?>"></script>
+<script>
+var ul = hapj.ui('.product_imgs').tag('ul');
+<?php if ($isUpdate):?>
+hapj.ui('#lnkModifyAvatar').on('click', function(e){
+	if (ul.html()) {
+		hapj.ui('.product_imgs').parent().show().prev().hide();
+		return false;
+	}
+	hapj.ajax({
+		url:e.target.href,
+		type:'POST',
+		dataType:'json',
+		success:function(ret) {
+			hapj.get('my').addProductImgs(ret.data.info, ul);
+			hapj.ui('.product_imgs').parent().show().prev().hide();
+		}
+	});
+	return false;
+});
+hapj.ui('#lnkCancelAvatar').on('click', function(e){
+	ul.next('input').attr('value', '');
+	hapj.ui('.product_imgs').parent().hide().prev().show();
+});
+<?php else:?>
+hapj.get('my').addProductImgs({
+	line:{
+		site_ename:'<?php echo empty($this->v['info']['line']['site_ename']) ? '' : $this->v['info']['line']['site_ename']?>'
+	},
+	item_id:'<?php echo $this->v['info']['item_id']?>',
+	images:<?php echo json_encode($this->v['info']['images'], true)?>
+}, ul);
+<?php endif;?>
+
+hapj.com('verify').active(hapj.ui('form'), {
+	ok: function() {
+		location.href='/my/tiao/<?php echo $this->v['tiao']['tiao_id']?>/products';
+	}
+});
+
+ul.on('img', 'click', function(e){
+	ul.tag('a').attr('class', '');
+	e.target.parentNode.className = 'on';
+	ul.next('input').attr('value', e.target.src);
+	return false;
+});
+</script>
+
+<?php echo $this->Partial('index/tpl/footer.phtml')?>

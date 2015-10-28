@@ -1,0 +1,50 @@
+/**************************common*************************/
+a{color:#369;}
+
+/**************************tiao***************************/
+body{background:#FAFAFA;}
+ol li{margin:0 18px;}
+.doc{margin:0 auto;width:960px;}
+#hd{background:#F0F0F0;padding:0 15px;height:40px;top:0;left:0;}
+#hd .doc{position:relative;}
+#logo{height:40px;width:160px;position:absolute;line-height:40px;}
+#logo a{color:#f36;font-size:30px;font-family:'Microsoft Yahei',SegouUI;font-weight:normal;font-style:italic;text-shadow:1px 1px 2px #A88;display:block;overflow:hidden;width:160px;height:40px;
+	/*background:url(../img/logo.png) no-repeat center center;text-indent:-9999px;*/
+}
+#hd ul{position:absolute;right:15px;top:8px;}
+#hd ul li{height:40px;line-height:24px;margin-right:4px;}
+#bd{padding:5px 0;min-height:500px;}
+#ft{text-align:center;margin:10px;}
+
+
+.tiao_list{margin-left:10px;}
+.tiao_list li.tiao{background:#FFF;width:270px;padding:10px 15px;border-radius:5px;box-shadow:1px 1px 5px #999;margin:10px 15px 0 -2px;}
+.tiao_list h2{}
+.tiao_list h2 a{color:#000;}
+.tiao_list .tiao .hd dd{width:212px;}
+
+.product_thumb{width:274px;height:80px;overflow:auto;overflow-y:hidden;overflow-x:auto;}
+.product_thumb img{display:block;cursor:pointer;width:60px;height:60px;border:solid 1px #FFF;}
+.product_thumb div{border:solid 2px #FFF;}
+.product_thumb div.on{border-color:#A10000;}
+.product_thumb ul{display:none;}
+
+ul.product_meta li{display:none;}
+.product_meta h4{font-size:14px;font-weight:normal;}
+
+.products dt.title {display:block;}
+
+.product_img{width:270px;height:270px;margin:2px;}
+.product_img ul{left:80px;top:125px;}
+.product_img ul li{padding-right:5px;background:white;opacity:0.9;filter:Alpha(Opacity=90);width:60px;height:30px;line-height:30px;text-align:center;border-radius:5px;box-shadow:1px 1px 3px #555;font-size:16px;}
+.product_img ul li.yes a{color:green;}
+.product_img ul li.no a{color:red;}
+
+.choose_list dd{width:410px;min-height:50px;margin-bottom:10px;}
+#chooseList h3{margin:5px 0;font-size:14px;}
+
+.choose_tab{height:30px;background:#F0F0F0;border-bottom:1px solid #336699;padding:1px 0 0 10px;overflow:hidden;}
+.choose_tab li{}
+.choose_tab li a{background:#FFF;display:block;font-size:14px;padding:0 10px;height:30px;line-height:30px;border-radius:3px;margin-top:2px;}
+.choose_tab li a:hover{text-decoration:none;}
+.choose_tab li a:hover,.choose_tab li.on a{background:#369;color:#FFF;}

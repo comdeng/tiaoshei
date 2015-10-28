@@ -1,0 +1,66 @@
+<?php if ($this->v['cuser']):?>
+	<?php if ($this->v['userChoose']):?>
+	<h3>我的看法</h3>
+	<?php echo $this->v['userChoose']['choose_remark']?>(<em class="date"><?php echo $this->Date($this->v['userChoose']['create_time'])?></em>)
+	<?php else:?>
+		<?php if (!$this->v['tiao']['is_expired']):?>
+	<h3>我的看法</h3>
+	<form method="post" action="/tiao/product/_add_choose" id="formAddChoose<?php echo $this->v['choose_type']?>">
+		<input type="hidden" name="product_id" value="<?php echo $this->v['product_id']?>"/>
+		<input type="hidden" name="choose_type" value="<?php echo $this->v['choose_type']?>"/> 
+		<textarea autofocus="autofocus" style="width:100%;height:40px;" name="choose_remark" maxlength="200" verify-rule="{
+			required:'理由不能为空',
+			range:{
+				type:'length',
+				min:5,
+				max:200,
+				msg:'理由长度为5-200个字'
+			},
+			hint:{
+				msg:'请输入您的理由',
+				id:'remarkHint'
+			}
+		}"></textarea>
+		<span id="remarkHint"></span><br/>
+		<input type="submit" value="<?php echo $this->v['choose_type'] == 1 ? '' : '不能'?>挑它!"/>
+	</form>
+	<script>
+	hapj.get('errMap').add({
+		'choose.u_remarkIsEmpty':'理由不能为空'
+	});
+	hapj.com('verify').active('formAddChoose<?php echo $this->v['choose_type']?>', {
+		ok:function() {
+			hapj.get('modalDlg').show('/tiao/product/<?php echo $this->v['product']['product_id']?>?type=<?php echo $this->v['choose_type'] ? 'yes' : 'no'?>');
+		}
+	});
+	</script>
+		<?php else:?>
+		<p class="remark" style="padding:10px;">该东东已经过了挑选日期了(<?php echo $this->Date($this->v['tiao']['expire_time'])?>)，不能再发表意见咯。</p>
+		<?php endif;?>
+	<?php endif;?>
+	
+<?php else:?>
+您还没有登录，不能发表意见哦！<a href="/account/login?rurl=<?php echo $this->app->request->url?>">点击登录。</a>
+<?php endif;?>
+
+<?php if($this->v['chooses']):?>
+<h3>他们也<?php echo $this->v['choose_type'] == 1 ? '挑了' : '不挑'?>TA...</h3>
+<dl class="g choose_list">
+<?php foreach ($this->v['chooses'] as $choose):
+if (!isset($this->v['users'][$choose['user_id']])) {
+	continue;
+}
+$user = $this->v['users'][$choose['user_id']];
+?>
+<dt class="avatar"><img src="<?php echo $this->Picture($user['avatar_id'], 'size50')?>"/></dt>
+<dd>
+	<div class="hd">
+		<a href="/user/<?php echo $user['user_id']?>"><?php echo $user['nickname']?></a>
+		<em class="date"><?php echo $this->Date($choose['create_time'])?></em>
+	</div>
+	<p class="remark"><?php echo $choose['choose_remark']?></p>
+</dd>
+<?php endforeach;?>
+</dl>
+<?php echo $this->Partial('index/tpl/pager.phtml')?>
+<?php endif;?>

@@ -1,0 +1,6 @@
+<?php $cpage = isset($this->v['cpage']) ? $this->v['cpage'] : 'basic'?>
+<ul class="my_sub_nav g">
+  <li<?php echo $cpage == 'basic' ? ' class="on"' : ''?>><a href="/my/account">基本资料</a></li>
+  <li<?php echo $cpage == 'password' ? ' class="on"' : ''?>><a href="/my/account/password">修改密码</a></li>
+  <li<?php echo $cpage == 'avatar' ? ' class="on"' : ''?>><a href="/my/account/avatar">修改头像</a></li>
+</ul>

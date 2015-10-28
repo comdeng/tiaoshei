@@ -1,0 +1,58 @@
+<?php echo $this->Partial('index/tpl/header.phtml')?>
+
+<ul class="g" style="padding:40px 0;">
+	<li style="width:400px;">
+		<h2 class="title">使用合作伙伴帐号登录</h2>
+		<ul>
+			<li class="weibo_icon"><a href="/account/open/sina">微博登录</a></li>
+			<li class="taobao_icon"><a href="/account/open/taobao">淘宝登录</a></li>
+			<li class="tencent_icon"><a href="/account/open/tencent">QQ登录</a></li>
+		</ul>
+	</li>
+	<li>
+		<h2 class="title">登录“挑谁”</h2>
+		<form method="post" action="/account/_login" id="formLogin">
+			<table class="form">
+				<tr>
+					<th>Email:</th>
+					<td><input type="text" name="email" value="" verify-rule="{required:'邮箱不能为空',email:'email格式不正确'}"/></td>
+				</tr>
+				<tr>
+					<th>密码:</th>
+					<td><input type="password" name="password" value="" verify-rule="{required:'密码不能为空'}"/></td>
+				</tr>
+				<tr>
+					<th></th>
+					<td>
+						<input type="checkbox" name="kept" vlaue="1" id="chkPersistLogin"/>
+						<label for="chkPersistLogin">下次自动登录</label>
+					</td>
+				</tr>
+				<tr>
+					<th></th>
+					<td><input type="submit" value="登录"/></td>
+				<tr>
+					<th></th>
+					<td>还没有帐号？赶紧<a href="/account/register">注册</a></td>
+				</tr>
+			</table>
+		</form>
+		
+		
+		<script>
+		hapj.get('errMap').add({
+			'user.u_emailOrPwdWrong':'email或者密码错误',
+			'user.u_notactived':'该用户尚未激活',
+			'user.u_forbidden':'该用户已经被冻结'
+		});
+		hapj.com('verify').active('formLogin', {
+			ok: function() {
+				location.href = '<?php echo $this->v['rurl'];?>';
+			}
+		});
+		</script>
+	</li>
+</ul>
+
+
+<?php echo $this->Partial('index/tpl/footer.phtml')?>

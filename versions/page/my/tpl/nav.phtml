@@ -1,0 +1,5 @@
+<?php $cpage = isset($this->v['cpage']) ? $this->v['cpage'] : 'home'?>
+<ul class="my_nav g">
+	<li<?php echo $cpage == 'tiao' ? ' class="on"' : ''?>><a href="/my/tiao/lists">我的挑</a></li>
+	<li<?php echo $cpage == 'account' ? ' class="on"' : ''?>><a href="/my/account">账户</a></li>
+</ul>

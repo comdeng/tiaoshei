@@ -1,0 +1,54 @@
+<?php echo $this->Partial('index/tpl/header.phtml', array(
+	'cssList' =>'/my/my.css'		
+))?>
+<?php echo $this->Partial('my/tpl/nav.phtml', array('cpage'=>'tiao'));?>
+<?php echo $this->Partial('my/tiao/tpl/nav.phtml', array('cpage'=>'tiaos'));?>
+
+<div class="g-f">
+<h2 class="title">“<?php echo $this->v['tiao']['tiao_name']?>”的东东们</h2>
+<a href="/my/tiao/lists" class="g-f-r">返回</a>
+</div>
+<form method="get" action="/my/tiao/<?php echo $this->v['tiao']['tiao_id']?>/add_product1/" id="formAddProduct">
+	<label>网址</label>
+	<input type="text" name="url" style="width:400px;" placeholder="http://" verify-rule="{
+		required:'网址不能为空',
+		url:'网址格式不正确',
+		hint:{id:'addProductHint'}
+	}"/>
+	<input type="submit" value="+东东"/>
+	<span id="addProductHint" class="hint"></span>
+</form>
+<script>hapj.ui('#formAddProduct').verifiable({submit:function(){}});</script>
+<div class="my_bd list">
+	<table>
+		<thead>
+			<tr>
+				<th width="40">ID</th>
+				<th>名称</th>
+				<th width="30">挑</th>
+				<th width="30">不挑</th>
+				<th width="70">价格</th>
+				<th width="80">操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach($this->v['products'] as $product):?>
+			<tr>
+				<td><?php echo $product['product_id']?></td>
+				<td><a title="点击查看原网页" href="<?php echo $product['product_url']?>" target="_blank"><?php echo $product['product_name']?></a></td>
+				<td><em class="yes_choose"><?php echo $product['yes_num']?></em></td>
+				<td><em class="no_choose"><?php echo $product['no_num']?></em></td>
+				<td>￥<?php echo $product['product_price']?></td>
+				<td>
+					<a href="/my/tiao/update_product/<?php echo $product['product_id']?>">编辑</a>
+					<a href="/my/tiao/_del_product?product_id=<?php echo $product['product_id']?>" confirm="你确定要删除吗？">删除</a>
+				</td>
+			</tr>
+			<?php endforeach;?>
+		</tbody>
+	</table>
+	<?php echo $this->Partial('index/tpl/pager.phtml')?>
+</div>
+<script type="text/javascript">hapj.ui('table').ajaxable({ok:function(){location.reload();}});</script>
+
+<?php echo $this->Partial('index/tpl/footer.phtml')?>

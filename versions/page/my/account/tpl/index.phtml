@@ -1,0 +1,29 @@
+<?php echo $this->Partial('index/tpl/header.phtml', array(
+	'cssList' =>'/my/my.css'		
+))?>
+<?php 
+	echo $this->Partial('my/tpl/nav.phtml', array('cpage'=>'account'));
+	$cuser = $this->v['cuser'];
+	echo $this->Partial('my/account/tpl/nav.phtml');
+?>
+
+<style>
+.my_dl dt{color:#666;}
+.my_dl dd img{width:100px;height:100px;}
+</style>
+<h2 class="title">我的资料</h2>
+<dl class="my_dl g">
+	<dt>头像</dt>
+	<dd>
+	<?php if($cuser['avatar_id']):?>
+	<img src="<?php echo $this->Picture($cuser['avatar_id'], 'size100');?>"/><a href="/my/account/avatar">修改</a>
+	<?php else:?>
+	<img src="<?php echo $this->StaticUrl('/static/img/default/user.png')?>"/>
+	<?php endif;?>
+	</dd>
+	<dt>昵称</dt>
+	<dd><?php echo $cuser['nickname']?></dd>
+	<dt>邮箱</dt>
+	<dd><?php echo $cuser['email']?></dd>
+</dl>
+<?php echo $this->Partial('index/tpl/footer.phtml')?>

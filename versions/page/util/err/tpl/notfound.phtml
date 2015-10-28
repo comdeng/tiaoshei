@@ -1,0 +1,8 @@
+<?php echo $this->Partial('index/tpl/header.phtml',array('simplePage' => true))?>
+<div style="text-align:center;padding:200px 0 100px;min-height:200px;">
+	<h2 class="title">页面找不到</h2>
+	<p class="remark">
+		您要进入的页面(<?php echo $this->v['url']?>)不存在，或者已经被删除。
+	</p>
+</div>
+<?php echo $this->Partial('index/tpl/footer.phtml')?>

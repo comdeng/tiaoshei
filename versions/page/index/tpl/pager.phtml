@@ -1,0 +1,150 @@
+<?php
+$req = $this->app->request;
+$args = $this->app->request->inputs;
+if (!isset($this->v['page']) && isset($args['_pn']) ) {
+	$this->v['page'] = $args['_pn'];
+}
+if (!isset($this->v['pageSize']) && isset($args['_sz']) ) {
+	$this->v['pageSize'] = $args['_sz'];
+}
+$page = min(max(0,  (isset($this->v['page']) ? intval($this->v['page']) : 0) ), 1000);
+$pageSize = min(max(0,  (isset($this->v['pageSize']) ? intval($this->v['pageSize']) : 20) ), 1000);
+$pageTag = '${page}';
+if (!isset($this->v['urlRule'])) {
+	$urlRule = $req->uri;
+	$pos = strpos($urlRule, '?');
+	if ($pos !== false) {
+		$urlRule = substr($urlRule, 0, $pos);
+	}
+} else {
+	$urlRule = $this->v['urlRule'];
+	$pos = strpos($urlRule, '?');
+	if ($pos !== false) {
+		$qs = substr($urlRule, $pos + 1);
+		$urlRule = substr($urlRule, 0, $pos);
+		parse_str($qs, $args);
+	} else {
+		$args = array();
+	}
+	if (!$urlRule) {
+		$urlRule = $req->uri;
+		$pos = strpos($urlRule, '?');
+		if ($pos !== false) {
+			$urlRule = substr($urlRule, 0, $pos);
+		}
+	}
+}
+foreach($args as $key => $value) {
+	if ($key == '_pn') {
+		$value = $pageTag; 
+	}
+	$args[$key] = "{$key}={$value}";
+}
+if (!isset($args['_pn'])) {
+	$args['_pn'] = '_pn='.$pageTag;
+}
+$urlRule = $urlRule.'?'.implode('&', $args);
+$total = isset($this->v['total']) ? $this->v['total'] : 0;
+$pageRange = isset($this->v['pageRange']) ? intval($this->v['pageRange']) : 6;
+if ($pageRange <= 0) {
+	$pageRange = 5;
+}
+
+
+$page = $page + 1;
+
+$showTotal = isset($this->v['showTotal']) ? $this->v['showTotal'] : false;
+$showGo = isset($this->v['showGo']) ? $this->v['showGo'] : false;
+$maxPageNum = isset($this->v['maxPageNum']) ? intval($this->v['maxPageNum']) : 50;
+
+$pageNum = ceil($total / $pageSize);
+if ($maxPageNum > 0 && $pageNum > $maxPageNum) {
+	$pageNum = $maxPageNum;
+}
+
+
+$ret = array();
+$ret[] = '<div class="pager">';
+$ret[] = '<ul>';
+if ($showTotal) {
+	$ret[] = '<li class="t">共'.$total.'项</li>';
+}
+
+if ($pageNum  > 1) {
+	$startUrl = preg_replace('/[\?\&]_pn\='.preg_quote($pageTag).'/', '', $urlRule);
+	if ($pageNum > $pageRange) {
+		if ($page > 1){ 
+			$ret[] = '<li class="f"><a href="'.$startUrl.'">首页</a></li>';
+			$ret[] = '<li class="p"><a href="'.str_replace($pageTag, $page - 2, $urlRule).'">上一页</a></li>';
+		}else{ 
+			$ret[] = '<li class="f">首页</li>';
+			$ret[] = '<li class="p">上一页</li>';
+		}
+	}
+
+	$half = ceil($pageRange / 2);
+	if ($page - $half < 1) {
+		$startP = 1;
+		$endP = min($startP + $pageRange, $pageNum);
+	} else if ($page + $half > $pageNum) {
+		$endP = $pageNum;
+		$startP = max($pageNum - $pageRange, 1);
+	} else {
+		$startP = $page - $half;
+		$endP = $pageRange + $startP;
+	}
+	
+	
+	if($startP > 1){
+		$ret[] = '<li class="d">...</li>';
+	}
+	for($p = $startP; $p < $page; $p++) { //设置当前pi之前的页码
+		if ($p == 1) {
+			$ret[] = '<li class="i"><a href="'.$startUrl.'">'.$p.'</a></li>';
+		} else {
+			$ret[] = '<li class="i"><a href="'.str_replace($pageTag, $p - 1, $urlRule).'">'.$p.'</a></li>';
+		}
+	}
+	$ret[] = '<li class="o">'.$page.'</li>';
+
+	for($p = $page+1; $p <= $endP; $p++){		//设置当前pi之后的页码
+		$ret[] = '<li class="i"><a href="'.str_replace($pageTag, $p - 1, $urlRule).'">'.$p.'</a></li>';
+	}
+
+	if($endP < $pageNum){
+		$ret[] = '<li class="d">...</li>';
+	}
+
+	if ($page < $pageNum){
+		$ret[] = '<li class="n"><a href="'.str_replace($pageTag, $page, $urlRule).'">下一页</a></li>';
+		$ret[] = '<li class="l"><a href="'.str_replace($pageTag, $pageNum - 1, $urlRule).'">尾页</a></li>';
+	}else{ 
+		$ret[] = '<li class="n">下一页</li>';
+		$ret[] = '<li class="l">尾页</li>';
+	}
+
+	if ($showGo && $pageNum > $pageRange) {
+		$pos = strpos($urlRule, '?');
+		if ($pos === false) {
+			$action = $urlRule;
+			$params = array();
+		} else {
+			$action = substr($urlRule, 0, $pos);
+			parse_str(substr($urlRule, $pos + 1), $params);
+		}
+
+
+		$ret[] = '<li class="g"><form method="get" action="'.$action.'">';
+		foreach ($params as $key=>$value) {
+			if ($key != '_pn') {
+				$ret[] = '<input type="hidden" name="'.$key.'" value="'.$value.'"/>';
+			} else {
+				$ret[] = '第<input type="text" size="2" id="pagergonum" class="text-b" name="_pn" value="'.$page.'" />页<input type="submit" class="e-btn-go" value="Go" onclick="this.form.'.$key.'.value = this.form.'.$key.'.value > 0 ? this.form.'.$key.'.value - 1 : 0"/></form></li>';
+			}
+		}
+	}
+}
+$ret[] = '</ul></div>';
+
+echo implode('', $ret);
+?>

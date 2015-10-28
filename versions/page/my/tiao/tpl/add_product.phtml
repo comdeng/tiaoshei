@@ -1,0 +1,157 @@
+<?php echo $this->Partial('index/tpl/header.phtml', array(
+		'cssList' => '/my/my.css'	
+	))?>
+<?php echo $this->Partial('my/tpl/nav.phtml', array('cpage'=>'tiao'));?>
+<?php echo $this->Partial('my/tiao/tpl/nav.phtml');?>
+
+<div class="g-f">
+	<h2 class="title">添加东东到“<?php echo $this->v['tiao']['tiao_name']?>”</h2>
+	<a href="/my/tiao/lists" class="g-f-r">返回</a>
+</div>
+
+<div class="list">
+<ol id="productList" class="my_tproducts">
+	<?php foreach($this->v['products'] as $product):?>
+	<li>
+	<?php echo $product['product_name']?>
+	<a href="/my/tiao/update_product/<?php echo $product['product_id'];?>">编辑</a>
+	<a href="/my/tiao/_del_product?product_id=<?php echo $product['product_id'];?>" confirm="你确定要删除吗？">删除</a>
+	</li>
+	<?php endforeach;?>
+	<li>
+	<form method="post" action="/my/tiao/_get_url_info" id="formAddProduct" autocomplete="off">
+		<input type="hidden" name="tiao_id" value="<?php echo $this->v['tiao']['tiao_id']?>"/>
+		<input type="text" name="url" value="http://" style="width:400px;" maxlength="200" verify-rule="{
+			hint:{
+				id:'productAddHint'
+			},
+			required:'网址不能为空',
+			url:'必须为网址'
+		}"/><input type="submit" value="添加" id="btnAddUrl"/><span id="productAddHint"></span>
+	</form>
+	</li>
+</ol>
+</div>
+
+<div id="liAddProduct"></div>
+<script type="text/x-hapj-tmpl" id="tmplAddProduct">
+	<form method="post" action="/my/tiao/_add_product">
+		<input type="hidden" name="tiao_id" value="<?php echo $this->v['tiao']['tiao_id']?>"/>
+		<input type="hidden" name="product_url" value="{product_url}"/>
+		<table width="100%">
+			<tr>
+				<th width="60">网址</th>
+				<td><a href="{product_url}" target="_blank">{product_url}</a></td>
+			</tr>
+			<tr>
+				<th>名称</th>
+				<td><input type="text" name="product_name" max_length="100" value="{product_name}" style="width:600px;" verify-rule="{
+					required:'名称不能为空',
+					range:{
+						type:'length',
+						min:1,
+						max:100,
+						msg:'名称长度为1至100字'
+					}
+				}"/></td>
+			</tr>
+			<tr>
+				<th>价格</th>
+				<td><input type="text" name="product_price" value="{product_price}" style="width:60px;" verify-rule="{
+					required:'价格不能为空',
+					number:'价格必须为数字'
+				}"/>元</td>
+			</tr>
+			<tr>
+				<th valign="top">图片</th>
+				<td>
+					<label>选择一副最适合该产品的图片吧！</label>
+					<div class="product_imgs">
+						<ul class="g"></ul>
+						<input type="hidden" name="product_img" value="" verify-rule="{required:'必须选择产品的图片'}"/>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th valign="top">理由</th>
+				<td>
+					<ul class="g">
+						<li>
+							<label>为什么要挑它呢？</label><br/>
+							<textarea style="width:300px;height:80px;" name="yes_remark"></textarea>
+						</li>
+						<li>
+							<label>不挑是因为什么呢？</label><br/>
+							<textarea style="width:300px;height:80px;" name="no_remark"></textarea>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<th></th>
+				<td>
+					<input type="submit" value="添加"/>
+					<a id="cancelLink">取消</a>
+				</td>
+			</tr>
+		</table>
+	</form>
+</script>
+<script src="<?php echo $this->StaticUrl('/my/my.js')?>"></script>
+<script>
+hapj.ui.ajaxable.ajaxTable(hapj.ui._id('productList'), {
+	ok:function() {
+		location.reload();
+	}
+});
+hapj.get('errMap').add({
+	'site.u_urlFormatWrong': '网址格式错误',
+});
+hapj.com('verify').active('formAddProduct', {
+	beforeSubmit:function(){
+		hapj.ui('#btnAddUrl').attr('disabled', true);
+	},
+	ok:function(data) {
+		var info = data.info;
+		info.product_name = info.title;
+		info.product_url = info.url;
+		info.product_price = info.price || '';
+		
+		var ap = hapj.ui('#liAddProduct');
+		ap.html(hapj.ui('#tmplAddProduct').tmpl(info));
+		var ul = ap.cls('product_imgs').tag('ul');
+		hapj.get('my').addProductImgs(info, ul);
+		ul.on('img', 'click', function(e){
+			ul.tag('a').attr('class', '');
+			e.target.parentNode.className = 'on';
+			ul.next('input').attr('value', e.target.src);
+			return false;
+		});
+		hapj.com('verify').active(ap.tag('form'), {
+			ok: function() {
+				location.reload();
+			}
+		});
+		this.style.display='none';
+		
+		hapj.ui('#cancelLink').on('click', function(){
+			window.location.reload();
+		});
+	}
+});
+</script>
+
+<?php if ($this->v['tiao']['tiao_status'] == 0 && count($this->v['products']) > 0):?>
+<form method="post" action="/my/tiao/_publish" id="publish">
+	<input type="hidden" name="tiao_id" value="<?php echo $this->v['tiao']['tiao_id']?>"/>
+	<input type="submit" value="发布"/>
+</form>
+<script>hapj.com('verify').active('publish', {
+	ok: function() {
+		hapj.ui.dialog.ok('发布成功', function(){
+			location.href = '/tiao/<?php echo $this->v['tiao']['tiao_id']?>';
+		});
+	}
+});</script>
+<?php endif;?>
+<?php echo $this->Partial('index/tpl/footer.phtml')?>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE cross-domain-policy
+SYSTEM "http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd">
+<cross-domain-policy>
+<site-control permitted-cross-domain-policies="master-only"/>
+<allow-access-from domain="c.tiaoshei.com"/>
+<allow-access-from domain="s.tiaoshei.com"/>
+<allow-access-from domain="*.tiaoshei.com" secure="false" to-ports="*"/>
+</cross-domain-policy>
+

@@ -1,0 +1,44 @@
+<?php if(!$this->app->request->userData['is_ajax']):?>
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title><?php echo isset($this->v['title']) ? $this->v['title'] : '挑谁';?></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<script type="text/javascript" src="<?php echo $this->StaticUrl('/static/js/hapj.js')?>"></script>
+		<script type="text/javascript" src="<?php echo $this->StaticUrl('/static/js/hapj.hook.js')?>"></script>
+		<link rel="stylesheet" href="<?php echo $this->StaticUrl('/static/css/core.css')?>"/>
+		<link rel="stylesheet" href="<?php echo $this->StaticUrl('/static/css/common.css')?>"/>
+		<link rel="stylesheet" href="<?php echo $this->StaticUrl('/static/css/tiaoshei.css')?>"/>
+		<?php if(!empty($this->v['cssList'])):
+			$cssList = is_string($this->v['cssList']) ? array($this->v['cssList']) : $this->v['cssList'];
+			foreach($cssList as $css):
+		?>
+		<link rel="stylesheet" href="<?php echo $this->StaticUrl($css)?>"/>
+		<?php 
+		endforeach;
+		endif?>
+	</head>
+	<body>
+	<div id="hd">
+		<div class="doc">
+			<h1 id="logo"><a href="/" title="挑谁，网络购物的最佳决策者">挑谁</a></h1>
+			<?php if (empty($this->v['simplePage'])):?>
+			<ul class="g">
+			<?php if (!empty($this->v['cuser'])):?>
+				<li><a href="/my/"><?php echo $this->v['cuser']['nickname'];?></a></li>
+				<li><a href="/my/tiao/add">+挑</a></li>
+				<li><a href="/account/logout">退出</a></li>
+			<?php else:?>
+				<li class="weibo_icon"><a href="/account/open/sina">微博登录</a></li>
+				<li class="taobao_icon"><a href="/account/open/taobao">淘宝登录</a></li>
+				<li class="tencent_icon"><a href="/account/open/tencent">QQ登录</a></li>
+				<li><a href="/account/login">登录</a></li>
+				<li><a href="/account/register">注册</a></li>
+			<?php endif;?>
+			</ul>
+			<?php endif;?>
+		</div>
+	</div>
+	<div id="bd" class="doc">
+<?php endif;?>

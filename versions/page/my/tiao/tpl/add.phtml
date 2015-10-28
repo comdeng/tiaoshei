@@ -1,0 +1,68 @@
+<?php echo $this->Partial('index/tpl/header.phtml', array(
+	'cssList' => '/my/my.css'		
+))?>
+<?php 
+	$isUpdate = $this->v['isUpdate'];
+	if (isset($this->v['tiao'])) {
+		$tiao = $this->v['tiao'];
+	}
+?>
+<style>
+	h2{font-size:24px;}
+	form label{display:block;height:24px;line-height:24px;color:#333;}
+	form div{margin-bottom:5px;}
+</style>
+<?php if ($isUpdate):?>
+<?php echo $this->Partial('my/tpl/nav.phtml', array('cpage'=>'tiao'));?>
+<?php echo $this->Partial('my/tiao/tpl/nav.phtml');?>
+<?php endif;?>
+<h2 class="title"><?php echo $isUpdate ? '修改' : '添加'?>挑</h2>
+<form action="/my/tiao/<?php echo ($isUpdate ? '_update' : '_add')?>" method="post" id="formAdd">
+	<?php if ($isUpdate):?>
+	<input type="hidden" name="tiao_id" value="<?php echo $tiao['tiao_id']?>"/>
+	<?php endif;?>
+	<label>什么东西让你难以挑选呢？</label>
+	<div><input type="text" name="tiao_name" value="<?php echo ($isUpdate ? $tiao['tiao_name'] : '')?>" verify-rule="{
+					required:'标题不能为空',
+					range:{
+						type:'length',
+						min:2,
+						max:50,
+						msg:'标题长度为2至50个字'
+					}
+				}" maxlength="50" style="width:500px"/>
+	</div>
+	<label>这个状况是在什么情景下发生的？</label>
+	<div>
+		<textarea rows="10" cols="80" name="tiao_desc" verify-rule="{
+			required:'描述不能为空',
+			range:{
+				type:'length',
+				min:20,
+				max:255,
+				msg:'长度为20到255个字'
+			}
+		}" style="width:500px;height:80px;"><?php echo ($isUpdate ? $tiao['tiao_desc'] : '')?></textarea>
+	</div>
+	<label>什么时候你要最终决策呢？</label>
+	<div><input type="text" name="expire_time" value="<?php echo ($isUpdate ? date('Y-m-d', $tiao['expire_time']) : '')?>" veriry-rule="{
+		required:'时间不能为空',
+		date:'必须为日期格式'
+	}" id="iptExpireTime"/></div>
+	<div>
+		<input type="submit" value="<?php echo $isUpdate ? '修改' : '添加'?>"/>
+	</div>
+</form>
+<script>
+hapj.com('cal').active('iptExpireTime');
+hapj.com('verify').active('formAdd', {
+	ok:function(data) {
+		<?php if ($isUpdate):?>
+		location.href = '/my/tiao/lists';
+		<?php else:?>
+		location.href = '/my/tiao/' + data.tiao_id + '/add_product';
+		<?php endif;?>
+	}
+});
+</script>
+<?php echo $this->Partial('index/tpl/footer.phtml')?>
